@@ -84,6 +84,25 @@ process.stdin.on("data", (data) => {
         console.error(err);
       }
     });
+  } else if (input.substring(0, 2) === "cp") {
+    const paths = input.split(" ");
+    fs.copyFile(paths[1], paths[2], (err) => {
+      if (err) {
+        console.error(err);
+      }
+    });
+  } else if (input.substring(0, 2) === "mv") {
+    const paths = input.split(" ");
+    fs.rename(paths[1], paths[2], (err) => {
+      if (err) {
+        console.error(err);
+      }
+    });
+  } else if (input.substring(0, 2) === "rm") {
+    const path = input.substring(3);
+    fs.rm(path, (err) => {
+      console.error(err);
+    });
   } else {
     console.log("Invalid input");
   }
