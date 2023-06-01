@@ -2,8 +2,10 @@
 
 import os from "os";
 import process from "node:process";
+import fs from "node:fs";
 
 const { username } = os.userInfo();
+const currentDir = process.cwd();
 console.log(`Welcome ${username}!`);
 
 process.on("exit", () => {
@@ -46,6 +48,33 @@ process.stdin.on("data", (data) => {
     case "os --memory":
       const totalMemory = os.totalmem();
       console.log(totalMemory);
+      break;
+    case "ls":
+      fs.readdir(currentDir, (err, allContent) => {
+        const folders = [];
+        const files = [];
+        if (err) console.log(err);
+        else {
+          console.log("\nCurrent directory content:");
+          allContent.forEach((file) => {
+            let type;
+            const stats = fs.statSync(file);
+            if (stats.isDirectory()) {
+              folders.push({ Name: file, Type: "directory" });
+            } else if (stats.isFile()) {
+              type = "file";
+              files.push({ Name: file, Type: "file" });
+            }
+          });
+          const content = [
+            ...folders.sort((a, b) => a.Name - b.Name),
+            ...files.sort((a, b) => a.Name - b.Name),
+          ];
+          content.forEach((file) => {
+            console.log(file);
+          });
+        }
+      });
       break;
     case ".exit":
       process.exit();
